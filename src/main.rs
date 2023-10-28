@@ -5,8 +5,9 @@ const SIMBOLI_DIS_SING: [&str; 2] = [">", "<"];
 //const SIMBOLI_DIS=[SIMBOLI_DIS_DOPPI,SIMBOLI_DIS_SING];
 const SIMBOLI_DIS: [&str; 4] = [">=", "<=", ">", "<"];
 const SIMBOLI_EQ: [&str; 1] = ["="];
-//const SIMBOLI_validi=[""];
-
+//const SIMBOLI_VALIDi=["/","+","-"];
+const NUMERI:[char; 10] =['0','1','2','3','4','5','6','7','8','9'];
+const LETTERE:[char; 3]=['a','b','c'];
 fn only_one(arr: Vec<&str>, s: String) -> bool {
     let mut res = 0;
     for i in 0..arr.len() {
@@ -23,7 +24,7 @@ fn only_one(arr: Vec<&str>, s: String) -> bool {
    
 }
 fn parameters(s: &str)->[&str; 2]{
-    let pos=where_simbol(s.to_string());
+    let pos=where_simbol(s.chars().collect());
     //println!("{}",pos);
     let (primo, secondo) = s.split_at(pos);
     println!("primo: {} secondo: {}",primo,secondo);
@@ -42,6 +43,7 @@ fn howmany(s: Vec<char>, simb: Vec<char>) -> u8 {
     //println!("{}",res);
     res
 }
+//vedere se non contiene almeno un elemento in un array di reference a stringhe come possono essere la lista dei simboli delle disequazioni
 fn not_contain(arr: Vec<&str>, s: String) -> bool {
     for i in 0..arr.len() {
         if howmany(s.chars().collect(), arr[i].chars().collect()) != 0 {
@@ -51,10 +53,9 @@ fn not_contain(arr: Vec<&str>, s: String) -> bool {
     true
 }
 //trova dov'è il simbolo che sta nell'array dei simboli
-fn where_simbol(s:String)->usize{
-let a:Vec<char>=s.chars().collect();
+fn where_simbol(s: Vec<char>)->usize{
 for i in 0..s.len(){
-if a[i]=='='||a[i]=='>'||a[i]=='<'{
+if s[i]=='='||s[i]=='>'||s[i]=='<'{
 return i;
 }
 }
@@ -64,7 +65,7 @@ fn syntax(s:String){
     if s.len()<=2{
         panic!("input non valido");
     }
-    //verificare che abbia 2 termini ovvero qualcosa prima e dopo dell segno
+    //verificare che abbia 2 termini ovvero qualcosa prima e dopo del segno
     if SIMBOLI_DIS
         .into_iter()
         .any(|x| x.chars().last() == s.chars().last())
@@ -115,18 +116,28 @@ fn syntax(s:String){
 
 
 //sposta tutti i numeri a destra cambiandoli di segno
-fn normalize(s: &str)->&str{
-    let parameters: [&str; 2]=parameters(&s);
-if parameters[0].contains("a"){
-
-}else{
-
+//ovviamente l incognita non si spostera a destra
+fn normalize(mut s: Vec<char>)->Vec<char>{
+    for i in 0..s.len() {
+        if NUMERI.contains(&s[i]){
+            if i< where_simbol(s.clone()){
+                move_to_right(i,s.clone());
+            }else{
+                return s.clone();
+            }
+        }
+    }
+s.clone()
 }
-s
-}
-//sposta a destra tutto ciò che non è l'incognita
-fn move_to_right(){
-
+//sposta a destra cambiando di segno
+    //guarda s destra,se ce un altro numero aggiungilo al buffer,fa cosi fino a quando non becchi
+    //un segno,in tal caso sara necessario partire dall index iniziale e guardare indietro facendo
+    //la stessa cosa di prima ma in questo caso trovando un segno si esce dal loop e si mette alla
+    //fine del vettore di input un buffer con uno spazio conosciuto con l ultimo segno cambiato
+    //in caso in tutto a sinistra non ci dovesse essere un segno dai per scontato che sia piu e
+    //fai la stessa procedura
+fn move_to_right(index: usize,mut s:Vec<char>){
+    let index_simbolo_eq=where_simbol(s.clone());
 }
 //risolvi la parte di destra e ritorna "param1 simbolo soluzione" per le equazioni,per le altre cambiare segno nei vari casi
 fn solve(){
